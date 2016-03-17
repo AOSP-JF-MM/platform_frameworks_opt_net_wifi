@@ -1007,7 +1007,7 @@ public class WifiScanningServiceImpl extends IWifiScanner.Stub {
             }
 
             int bestBucketIndex = -1;                                   // best by period
-            for (int i = 0; i < mTimeBuckets.length; i++) {
+            for (int i = 0; i < mTimeBuckets.length && i < mSettings.buckets.length; i++) {
                 TimeBucket bucket = mTimeBuckets[i];
                 if (bucket.periodMinInSecond * 1000 <= settings.periodInMs
                         && settings.periodInMs < bucket.periodMaxInSecond * 1000) {
@@ -1015,10 +1015,6 @@ public class WifiScanningServiceImpl extends IWifiScanner.Stub {
                     bestBucketIndex = i;
                     break;
                 }
-            }
-
-            if (bestBucketIndex >= mSettings.buckets.length) {
-                bestBucketIndex = -1;
             }
 
             if (mostFrequentBucketIndex < bestBucketIndex) {
