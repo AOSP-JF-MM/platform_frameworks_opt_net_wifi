@@ -1719,12 +1719,14 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
         freqs = new HashSet<Integer>();
         if (mNumSelectiveChannelScan <  mMaxInitialSavedChannelScan) {
            freqs = mWifiConfigManager.getConfiguredChannelList();
+           mNumSelectiveChannelScan++;
         }
         if (freqs != null && (freqs.size() == 0)) {
             freqs = null;
         }
         if (freqs == null) {
             if (settings != null && settings.channelSet != null) {
+                freqs = new HashSet<Integer>();
                 for (WifiChannel channel : settings.channelSet) {
                     freqs.add(channel.freqMHz);
                 }
@@ -1813,12 +1815,6 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
         WifiScanner.ScanListener nativeScanListener = new WifiScanner.ScanListener() {
                 // ignore all events since WifiStateMachine is registered for the supplicant events
                 public void onSuccess() {
-                    /* As part of optimizing time for initial scans for
-                     * saved profiles, increment the  scan trigger count
-                     * upon receiving a success.
-                     */
-                    if (mNumSelectiveChannelScan < mMaxInitialSavedChannelScan)
-                        mNumSelectiveChannelScan++;
                 }
                 public void onFailure(int reason, String description) {
                     mIsScanOngoing = false;
